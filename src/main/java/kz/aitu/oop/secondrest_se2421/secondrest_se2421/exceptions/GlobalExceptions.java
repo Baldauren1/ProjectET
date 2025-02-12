@@ -5,10 +5,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.NoSuchElementException;
+
 @RestControllerAdvice
-public class GlobalExceptions {
-    @ExceptionHandler
-    public ResponseEntity<String> handleException(Exception e) {
-        return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ошибка: " + e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGeneralException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Внутренняя ошибка сервера: " + e.getMessage());
     }
 }
